@@ -89,7 +89,17 @@ module Library
   end
 
   def self.info_on(book_title)
-
+    # Prints out more information on a specific book.
+    # Title, Author, Description, Year published, Edition, How many avaiable.
+    look_up = @collection[book_title.to_sym]
+    print %<
+      Title:             #{look_up.title}
+      Author:            #{look_up.author}
+      Description:       #{look_up.desc}
+      Published year:    #{look_up.year}
+      Edition:           #{look_up.edition}
+      Number Available:  #{look_up.num_in}
+     >
   end
 
   def self.check_out(book_title, user, pin)
@@ -145,3 +155,4 @@ Library.check_out("Fish", "Bob", 4821)
 Library.return("Fish", "Bob", 4821)
 
 Library.list
+Library.info_on("Fish")
