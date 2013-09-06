@@ -8,13 +8,29 @@ class User
   # - Overdue books
   # - Book status
 
-  attr_reader :username
-  attr_reader :pin_num
+  attr_reader :username, :pin_num
+  
+  attr_accessor :overdue 
+  attr_accessor :max_borrowed 
+  attr_accessor :borrowed_books 
+  @borrowed_books = {}
+
+  # overdue: if user has any overdue books, overdue = true
+  # max_borrowed:if the number of books borrowed >= 2 max_borrowed = true
+  # borrowed_books: list of books borrowed.
 
   def initialize(username, pin_num, answer)
     # Records first and last name and pin number user sets.
     @username = username
     @pin_num = pin_num
+
+    @overdue = false
+    @max_borrowed = false
+  end
+
+  def check_out(book)
+    @borrowed_books[book[:title].to_sym] = book
+    max_borrowed = true if @borrowed_books.length >= 2
   end
 
 end

@@ -6,18 +6,21 @@ class Book
   attr_reader :title, :author, :desc, :year, :edition
 
 
-  attr_accessor :num_copies, :rating, :reviews, :checked_in, :checked_out
+  attr_accessor :num_copies, :rating, :reviews, :check_in, :check_out, :borrowed_by
+
+  # check_in keeps track of how many books are available
+  # check_out keeps track of how many copies are out.
+  # borrowed_by keeps track of who borrowed this book.
 
 
-
-  def initialize(title, author, desc, num_copies, year, edition)
+  def initialize(title, author, desc, year, edition, num_copies)
     # Runs whenever user adds a new book to Library.
     # Assigns and storees attributes
     #
     # title: Book title = String
     # author: Book title = String
     # desc: Book title = String
-    # num_copies: How many copies of a book = FixNum
+    # num_copies: How many copies of a book, default is 1 = FixNum
     # year: year published = FixNum
     # edition: what edition is the book? = FixNum
 
@@ -30,7 +33,8 @@ class Book
     @edition = edition
 
     @num_copies =1
-    @check_in = 1
+    @check_in = @num_copies
+    @check_out = 0
   end
 
   def dup_copy
@@ -40,6 +44,16 @@ class Book
     @check_in += 1
 
     puts "Great now we have #{@num_copies}!"
+  end
+
+  def check_out
+    # Called when user checks out a book.
+    # Will keep track of how many copies are left on the shelf, and how many are out.
+
+    @check_in -= 1
+    @check_out += 1
+
+    puts "Inventory ERROR!!!!" if @check_out > @num_copies
   end
 
 end

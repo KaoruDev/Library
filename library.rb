@@ -39,7 +39,7 @@ module Library
   # - Time borrowed, time due.
 
 
-  def self.add_book(title, author, desc, num_copies, year, edition)
+  def self.add_book(title, author, desc, year, edition, num_copies = 1)
     # Creates a new book passing arguments to the Book class for storage.
     # Book class then Assigns and stores attributes
     #
@@ -57,7 +57,7 @@ module Library
       # dup_copy will simply increase the number of available books.
       @collection[title.to_sym].dup_copy
     else
-      book = Book.new(title, author, desc, num_copies, year, edition)
+      book = Book.new(title, author, desc, year, edition, num_copies)
       @collection[title.to_sym] = book
     end
 
@@ -76,10 +76,29 @@ module Library
     @users[username.to_sym] = user
   end
 
-  def self.check_out(book, user, pin)
+  def self.check_out(book_title, user, pin)
+    # Stamps a book for check out.
+    # Requires book_title = string
+    # verifies user (string) and pin (interger)
 
+    if @collection[book_title.to_sym] && @users[user.to_sym] && @collection[book_title.to_sym].check_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
+      # Will verify if the book is in the collection
+      # Verify the user
+      # Verify if the book is available.
+      puts "You can borrow #{book_title}!"
+      @collection[book_title.to_sym].check_out
+      #@users[user.to_sym].check_out(@collection[book_title.to_sym])
+      @users[user.to_sym].check_out(@collection[book_title.to_sym])
+    else
+      puts "You may not borrow this book!"
+    end
   end
-
-
-
 end
+
+
+Library.add_book("Fish", "author", "desc", "year", "edition")
+Library.add_book("Fish", "author", "desc", "year", "edition")
+Library.add_book("Fish", "author", "desc", "year", "edition")
+Library.add_user("Bob", 4821, "Marley")
+
+Library.check_out("Fish", "Bob", 4821)
