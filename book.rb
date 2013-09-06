@@ -1,7 +1,7 @@
 class Book
-# class Book in book.rb will hold book's information such as
-# author, title, description, number of copies, ratings, reviews,
-# year published and edition.
+  # class Book in book.rb will hold book's information such as
+  # author, title, description, number of copies, ratings, reviews,
+  # year published and edition.
 
   attr_reader :title, :author, :desc, :year, :edition
 
@@ -14,12 +14,12 @@ class Book
     # Runs whenever user adds a new book to Library.
     # Assigns and storees attributes
     #
-    # title - Book title = String
-    # author - Book title = String
-    # desc - Book title = String
-    # num_copies - How many copies of a book = FixNum
-    # year - year published = FixNum
-    # edition - what edition is the book? = FixNum
+    # title: Book title = String
+    # author: Book title = String
+    # desc: Book title = String
+    # num_copies: How many copies of a book = FixNum
+    # year: year published = FixNum
+    # edition: what edition is the book? = FixNum
 
     @title = title
     @author = author

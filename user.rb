@@ -1,20 +1,20 @@
 class User
   # User class will hold information on each user, such as:
   #
-  # - Name
+  # - Username
   # - Pin number (four-digit password) to verify actions
-  # - Array of borrowed books.
+  # - Answer to security question.
+  # - List of borrowed books.
   # - Overdue books
-  # - Time borrowed, time due.
+  # - Book status
 
-  attr_reader :first_name, :last_name
+  attr_reader :username
 
   pin_num # kept local so others can't acces it.
 
-  def initialize(first_name, last_name, pin_num)
+  def initialize(username, pin_num, answer)
     # Records first and last name and pin number user sets.
-    @first_name = first_name
-    @last_name = last_name
+    @username = username
     @pin_num = pin_num
   end
 
