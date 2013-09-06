@@ -9,8 +9,7 @@ class User
   # - Book status
 
   attr_reader :username
-
-  pin_num # kept local so others can't acces it.
+  attr_reader :pin_num
 
   def initialize(username, pin_num, answer)
     # Records first and last name and pin number user sets.
