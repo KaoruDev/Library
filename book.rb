@@ -6,7 +6,7 @@ class Book
   attr_reader :title, :author, :desc, :year, :edition
 
 
-  attr_accessor :num_copies, :rating, :reviews, :check_in, :check_out, :borrowed_by
+  attr_accessor :num_copies, :rating, :reviews, :num_in, :num_out, :borrowed_by
 
   # check_in keeps track of how many books are available
   # check_out keeps track of how many copies are out.
@@ -32,16 +32,16 @@ class Book
     @year = year
     @edition = edition
 
-    @num_copies =1
-    @check_in = @num_copies
-    @check_out = 0
+    @num_copies = num_copies
+    @num_in = @num_copies
+    @num_out = 0
   end
 
   def dup_copy
     # If a user tries to add a book already in a collection,
     # dup_copy will increase availability.
     @num_copies += 1
-    @check_in += 1
+    @num_in += 1
 
     puts "Great now we have #{@num_copies}!"
   end
@@ -50,19 +50,19 @@ class Book
     # Called when user checks out a book.
     # Will keep track of how many copies are left on the shelf, and how many are out.
 
-    @check_in -= 1
-    @check_out += 1
+    @num_in -= 1
+    @num_out += 1
 
-    puts "Inventory ERROR!!!!" if @check_out > @num_copies
+    puts "Inventory ERROR!!!!" if @num_out > @num_copies
   end
 
   def return
     # Refreshes book count and how many copies are available.
 
-    @check_in += 1
-    @check_out -= 1
+    @num_in += 1
+    @num_out -= 1
 
-    puts "Inventory ERROR!!!" if @check_in > @num_copies
+    puts "Inventory ERROR!!!" if @num_in > @num_copies
 
   end
 

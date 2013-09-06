@@ -75,14 +75,29 @@ module Library
   end
 
 
+  def self.list
+    # Prints a list of books, how many copies there are, how many copies are checked out,
+    # who they are checked out by, and how many are available.
 
+    print %<
+    Title\tAuthor\t\tChecked In\tChecked Out\t>
+    @collection.each { |name, book|
+      print %<
+      #{book.title}\t#{book.author}\t\t#{book.num_in}\t\t#{book.num_out}
+      >
+    }
+  end
+
+  def self.info_on(book_title)
+
+  end
 
   def self.check_out(book_title, user, pin)
     # Stamps a book for check out.
     # Requires book_title = string
     # verifies user (string) and pin (interger)
 
-    if @collection[book_title.to_sym] && @users[user.to_sym] && @collection[book_title.to_sym].check_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
+    if @collection[book_title.to_sym] && @users[user.to_sym] && @collection[book_title.to_sym].num_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
       # Verifies book is exists in database and if it is available.
       # Also verifies if user has 2 or more books checked out and if she has any overdue books.
       puts "You can borrow #{book_title}!"
@@ -128,3 +143,5 @@ Library.add_user("Bob", 4821, "answer")
 
 Library.check_out("Fish", "Bob", 4821)
 Library.return("Fish", "Bob", 4821)
+
+Library.list
