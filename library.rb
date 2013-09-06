@@ -102,6 +102,21 @@ module Library
      >
   end
 
+  def self.my_books(user)
+    # prints out of a list of books that you have checked out.
+    puts %<
+    Here is a list of books you currently have checked_out>
+
+    if @users[user.to_sym] && @users[user.to_sym].borrowed_books.length > 0
+      @users[user.to_sym].borrowed_books.each {|key, value|
+        puts %<
+        - #{value.title}>
+      }
+    else
+
+    end
+  end
+
   def self.check_out(book_title, user, pin)
     # Stamps a book for check out.
     # Requires book_title = string
@@ -150,9 +165,13 @@ Library.add_book("Fish", "author", "desc", "year", "edition")
 Library.add_book("Fish", "author", "desc", "year", "edition")
 Library.add_book("LOTR", "author", "desc", "year", "edition", 4)
 Library.add_user("Bob", 4821, "answer")
+Library.add_user("Goat", 0000, "answer")
 
 Library.check_out("Fish", "Bob", 4821)
 Library.return("Fish", "Bob", 4821)
 
 Library.list
 Library.info_on("Fish")
+
+Library.check_out("LOTR", "Goat", 0000)
+Library.my_books("Goat")
