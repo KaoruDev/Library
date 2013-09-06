@@ -34,4 +34,8 @@ class User
     max_borrowed = true if @borrowed_books.length >= 2
   end
 
+  def return(book_title)
+    @borrowed_books.delete(book_title.to_sym)
+  end
+
 end

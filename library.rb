@@ -60,8 +60,6 @@ module Library
       book = Book.new(title, author, desc, year, edition, num_copies)
       @collection[title.to_sym] = book
     end
-
-    
   end
 
   def self.add_user(username, pin_num, answer)
@@ -76,15 +74,17 @@ module Library
     @users[username.to_sym] = user
   end
 
+
+
+
   def self.check_out(book_title, user, pin)
     # Stamps a book for check out.
     # Requires book_title = string
     # verifies user (string) and pin (interger)
 
     if @collection[book_title.to_sym] && @users[user.to_sym] && @collection[book_title.to_sym].check_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
-      # Will verify if the book is in the collection
-      # Verify the user
-      # Verify if the book is available.
+      # Verifies book is exists in database and if it is available.
+      # Also verifies if user has 2 or more books checked out and if she has any overdue books.
       puts "You can borrow #{book_title}!"
       @collection[book_title.to_sym].check_out
       @users[user.to_sym].check_out(@collection[book_title.to_sym])
@@ -92,12 +92,39 @@ module Library
       puts "You may not borrow this book!"
     end
   end
+
+  def self.return(book_title, user, pin)
+    # returns book to library.
+    # user is converted to a symbol to access hash key in @users to determine who user is.
+    
+    if @users[user.to_sym].borrowed_books[book_title.to_sym]  && @users[user.to_sym].pin_num == pin
+      # Verifies if user has a this specific book checked out.
+      # Verifies user's pin number. If both are true,
+      # user's record is cleared, and book count is returned to collection.
+
+      @collection[book_title.to_sym].return
+      @users[user.to_sym].return(book_title)
+
+      puts "Book returned!"
+
+    else
+      puts "I'm sorry I didn't get that, try again."
+    end
+
+
+  end
+
+
+
+
 end
 
 
 Library.add_book("Fish", "author", "desc", "year", "edition")
 Library.add_book("Fish", "author", "desc", "year", "edition")
 Library.add_book("Fish", "author", "desc", "year", "edition")
+Library.add_book("LOTR", "author", "desc", "year", "edition", 4)
 Library.add_user("Bob", 4821, "answer")
 
 Library.check_out("Fish", "Bob", 4821)
+Library.return("Fish", "Bob", 4821)

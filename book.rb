@@ -56,4 +56,14 @@ class Book
     puts "Inventory ERROR!!!!" if @check_out > @num_copies
   end
 
+  def return
+    # Refreshes book count and how many copies are available.
+
+    @check_in += 1
+    @check_out -= 1
+
+    puts "Inventory ERROR!!!" if @check_in > @num_copies
+
+  end
+
 end
