@@ -22,11 +22,24 @@ module Library
 #  -Kaoru Kohashigawa > dev@kaoruk.com
 # 
 
-require 'book.rb'
-#class Book in book.rb will hold book's information such as
-# author, title, description, number of copies, ratings,
-# year published and edition.
+  require './book.rb'
+  #class Book in book.rb will hold book's information such as
+  # author, title, description, number of copies, ratings, reviews,
+  # year published and edition.
 
+
+  def self.add_book(title, author, desc, num_copies, year, edition)
+    # Creates a new book passing arguments to the Book class for storage.
+    # Book class then Assigns and stores attributes
+    #
+    # title - Book title = String
+    # author - Book title = String
+    # desc - Book title = String
+    # num_copies - How many copies of a book = FixNum
+    # year - year published = FixNum
+    # edition - what edition is the book? = FixNum
+    title = Book.new(title, author, desc, num_copies, year, edition)
+  end
 
 
 end
