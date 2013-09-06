@@ -21,8 +21,8 @@ module Library
   # 
   #  -Kaoru Kohashigawa > dev@kaoruk.com
 
-  @collection = {} #Array that holds all of the books of the Library
-  @users = {} #Array that holds registered users.
+  @collection = {} #Keeps track of all books
+  @users = {} #Keeps track of all users
 
   require './book.rb'
   # Brings in Book class which will hold book's information such as
@@ -51,9 +51,17 @@ module Library
     # edition: what edition is the book? = FixNum
     #
     # Then it is added to the Library's collection.
-    book = Book.new(title, author, desc, num_copies, year, edition)
 
-    @collection[title.to_sym] = book
+    if @collection != {} && @collection[title.to_sym]
+      # If a user tries to add a book already in a collection, 
+      # dup_copy will simply increase the number of available books.
+      @collection[title.to_sym].dup_copy
+    else
+      book = Book.new(title, author, desc, num_copies, year, edition)
+      @collection[title.to_sym] = book
+    end
+
+    
   end
 
   def self.add_user(username, pin_num, answer)
@@ -69,9 +77,9 @@ module Library
   end
 
   def self.check_out(book, user, pin)
-    # Checks
 
   end
+
 
 
 end
