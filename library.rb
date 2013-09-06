@@ -87,7 +87,6 @@ module Library
       # Verify if the book is available.
       puts "You can borrow #{book_title}!"
       @collection[book_title.to_sym].check_out
-      #@users[user.to_sym].check_out(@collection[book_title.to_sym])
       @users[user.to_sym].check_out(@collection[book_title.to_sym])
     else
       puts "You may not borrow this book!"
@@ -99,6 +98,6 @@ end
 Library.add_book("Fish", "author", "desc", "year", "edition")
 Library.add_book("Fish", "author", "desc", "year", "edition")
 Library.add_book("Fish", "author", "desc", "year", "edition")
-Library.add_user("Bob", 4821, "Marley")
+Library.add_user("Bob", 4821, "answer")
 
 Library.check_out("Fish", "Bob", 4821)
