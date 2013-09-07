@@ -35,6 +35,7 @@ class Book
     @num_copies = num_copies
     @num_in = @num_copies
     @num_out = 0
+    @borrowed_by = []
   end
 
   def dup_copy
@@ -56,6 +57,11 @@ class Book
     puts "Inventory ERROR!!!!" if @num_out > @num_copies
   end
 
+  def check_out_by(user)
+    # Method keeps track of who is bororwing this book.
+    borrowed_by.push(user)
+  end
+
   def return
     # Refreshes book count and how many copies are available.
 
@@ -64,6 +70,16 @@ class Book
 
     puts "Inventory ERROR!!!" if @num_in > @num_copies
 
+  end
+
+  def return_by(user)
+    # Cycles through users array and delets user from list.
+
+    borrowed_by.map {|user_in_arr|
+      if user_in_arr == user
+        borrowed_by.delete(user)
+      end
+    }
   end
 
 end

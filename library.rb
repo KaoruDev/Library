@@ -127,6 +127,7 @@ module Library
       # Also verifies if user has 2 or more books checked out and if she has any overdue books.
       puts "You can borrow #{book_title}!"
       @collection[book_title.to_sym].check_out
+      @collection[book_title.to_sym].check_out_by(user)
       @users[user.to_sym].check_out(@collection[book_title.to_sym])
     else
       puts "You may not borrow this book!"
@@ -143,6 +144,7 @@ module Library
       # user's record is cleared, and book count is returned to collection.
 
       @collection[book_title.to_sym].return
+      @collection[book_title.to_sym].return_by(user)
       @users[user.to_sym].return(book_title)
 
       puts "Book returned!"
