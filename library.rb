@@ -212,6 +212,14 @@ module Library
     }
   end
 
+  # Writes a review for a book. Passes a string and a 1-5 rating for the book.
+
+  # Prints book reviews and rating value.
+
+  # Enables users to schedule future check_outs
+
+  # Enables users to extends borrow time.
+
 end
 
 
