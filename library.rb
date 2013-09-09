@@ -177,7 +177,7 @@ module Library
   end
 
   # Creates a CSV file "Collection.csv" with a list of books in the library.
-  def self.create_list
+  def self.create_book_list
     header = ["Title", "Author"]
 
     CSV.open("Collection.csv", "ab"){|csv|
@@ -192,6 +192,22 @@ module Library
         csv << current_book
       }
     }
+  end
+
+  # Pulls in a csv file and adds it to the book collection.
+  # csv_file = filename of CSV file that users wish to import
+  def self.import_book_list(csv_file)
+    csv = CSV.read(csv_file, {
+      headers: true,
+      header_converters: :symbol
+      })
+    csv.each{ |row|
+      puts row
+    }
+
+    # csv.each { |row|
+    #   self.add_book(row[:name], row[:author], row[:desc], row[:year], row[:edition], row[:num_copies])
+    # }
   end
 
 end
