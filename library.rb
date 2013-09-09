@@ -72,9 +72,14 @@ module Library
     # - pin_num: used to verify user
     # - answer: answer to security question incase user loses pin
     # NOTE: Secruity Question has not been created, since there is no output in program yet.
-    user = User.new(username, pin_num, answer)
+    
+    if @users != {} && @users[username.to_sym]
+      puts "Sorry, #{username} is taken."
+    else
+      user = User.new(username, pin_num, answer)
 
-    @users[username.to_sym] = user
+      @users[username.to_sym] = user
+    end
   end
 
 
@@ -82,11 +87,12 @@ module Library
     # Prints a list of books, how many copies there are, how many copies are checked out,
     # who they are checked out by, and how many are available.
 
-    print %<
-    Title\tAuthor\t\tChecked In\tChecked Out\t>
     @collection.each { |name, book|
       print %<
-      #{book.title}\t#{book.author}\t\t#{book.num_in}\t\t#{book.num_out}
+      Title: #{book.title}
+      Author: #{book.author}
+      Checked In: #{book.num_in}
+      Checked Out: #{book.num_out}
       >
     }
   end
@@ -96,12 +102,12 @@ module Library
     # Title, Author, Description, Year published, Edition, How many avaiable.
     look_up = @collection[book_title.to_sym]
     print %<
-      Title:             #{look_up.title}
-      Author:            #{look_up.author}
-      Description:       #{look_up.desc}
-      Published year:    #{look_up.year}
-      Edition:           #{look_up.edition}
-      Number Available:  #{look_up.num_in}
+      Title:              #{look_up.title}
+      Author:             #{look_up.author}
+      Description:        #{look_up.desc}
+      Published year:     #{look_up.year}
+      Edition:            #{look_up.edition}
+      Number Available:   #{look_up.num_in}
      >
   end
 
@@ -202,22 +208,18 @@ module Library
       header_converters: :symbol
       })
     csv.each{ |row|
-      puts row
+      self.add_book("#{row[:title]}", "#{row[:author]}", "#{row[:desc]}", "#{row[:year]}", "#{row[:edition]}", "#{row[:num_copies]}")
     }
-
-    # csv.each { |row|
-    #   self.add_book(row[:name], row[:author], row[:desc], row[:year], row[:edition], row[:num_copies])
-    # }
   end
 
 end
 
 
-Library.add_book("Fish", "author", "desc", "year", "edition")
-Library.add_book("Fish", "author", "desc", "year", "edition")
-Library.add_book("Fish", "author", "desc", "year", "edition")
-Library.add_book("LOTR", "author", "desc", "year", "edition", 4)
+Library.add_book("Fish", "Fish Author", "Fish Desc", "Fish Year", "Fish Edition")
+Library.add_book("LOTR", "JJ Tokens", "LOTR desc", "LOTR year", "LOTR edition", 4)
 Library.add_user("Bob", 4821, "answer")
+Library.add_user("Goat", 0000, "answer")
+Library.add_user("Jillio", 0000, "answer")
 Library.add_user("Goat", 0000, "answer")
 
 Library.check_out("Fish", "Bob", 4821)

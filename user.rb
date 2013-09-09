@@ -63,7 +63,7 @@ class User
     time = Time.now
     @time_table.each{ |book, date|
       if date <= time
-        puts "Bro a #{book} is overdue"
+        puts "Bro #{book} is overdue"
         @overdue = true
       end
     }
