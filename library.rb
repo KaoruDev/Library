@@ -38,6 +38,9 @@ module Library
   # - Overdue books
   # - Time borrowed, time due.
 
+  # csv to add CSV functionality
+  require 'csv'
+
 
   def self.add_book(title, author, desc, year, edition, num_copies = 1)
     # Creates a new book passing arguments to the Book class for storage.
@@ -171,6 +174,24 @@ module Library
   #Test over due by setting a book that is over due on purpose.
   def self.test_over_due(book_title, user)
     @users[user.to_sym].set_over_due(@collection[book_title.to_sym])
+  end
+
+  # Creates a CSV file "Collection.csv" with a list of books in the library.
+  def self.create_list
+    header = ["Title", "Author"]
+
+    CSV.open("Collection.csv", "ab"){|csv|
+      csv << header
+    }
+
+    @collection.each_value {|book|
+      current_book = []
+      current_book.push (book.title)
+      current_book.push (book.author)
+      CSV.open("Collection.csv", "ab"){ |csv|
+        csv << current_book
+      }
+    }
   end
 
 end
