@@ -117,18 +117,22 @@ module Library
     end
   end
 
-  def self.check_out(book_title, user, pin)
-    # Stamps a book for check out.
-    # Requires book_title = string
-    # verifies user (string) and pin (interger)
+  # check_out stamps a book for check out.
+  # Requires book_title = string
+  # verifies user (string) and pin (interger)
 
-    if @collection[book_title.to_sym] && @users[user.to_sym] && @collection[book_title.to_sym].num_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
-      # Verifies book is exists in database and if it is available.
-      # Also verifies if user has 2 or more books checked out and if she has any overdue books.
+  def self.check_out(book_title, user, pin)
+
+    # Verifies if the book is in @collection, if user has an account and correct pin number, the book is available,
+    # the user has no overdue books or has 2 books borrowed. If true, sends information to both book and user class
+    # to update changes. 
+    if @collection[book_title.to_sym] && @users[user.to_sym] && @users[user.to_sym].pin_num == pin && @collection[book_title.to_sym].num_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
+      due_date = Time.now + (60 * 60 * 24 * 7)
+  
       puts "You can borrow #{book_title}!"
       @collection[book_title.to_sym].check_out
       @collection[book_title.to_sym].check_out_by(user)
-      @users[user.to_sym].check_out(@collection[book_title.to_sym])
+      @users[user.to_sym].check_out(@collection[book_title.to_sym], due_date)
     else
       puts "You may not borrow this book!"
     end
@@ -152,12 +156,22 @@ module Library
     else
       puts "I'm sorry I didn't get that, try again."
     end
-
-
   end
 
+  # Checks through @users to find any user who has a book that is overdue.
 
+  def self.check_over_due
+    @users.each_value {|user|
+      if user.time_table != {} && !user.overdue && !user.max_borrowed
+        user.check_over_due
+      end
+    }
+  end
 
+  #Test over due by setting a book that is over due on purpose.
+  def self.test_over_due(book_title, user)
+    @users[user.to_sym].set_over_due(@collection[book_title.to_sym])
+  end
 
 end
 
@@ -177,3 +191,12 @@ Library.info_on("Fish")
 
 Library.check_out("LOTR", "Goat", 0000)
 Library.my_books("Goat")
+
+Library.test_over_due("LOTR", "Bob")
+Library.check_over_due
+
+
+
+
+
+

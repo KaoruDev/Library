@@ -1,8 +1,7 @@
+# class Book in book.rb will hold book's information such as
+# author, title, description, number of copies, ratings, reviews,
+# year published, edition, how many are checked-in, and how many are out.
 class Book
-  # class Book in book.rb will hold book's information such as
-  # author, title, description, number of copies, ratings, reviews,
-  # year published, edition, how many are checked-in, and how many are out.
-
   attr_reader :title, :author, :desc, :year, :edition
 
 
@@ -12,18 +11,16 @@ class Book
   # check_out keeps track of how many copies are out.
   # borrowed_by keeps track of who borrowed this book.
 
-
+  # Runs whenever user adds a new book to Library.
+  # Assigns and storees attributes
+  #
+  # title: Book title = String
+  # author: Book title = String
+  # desc: Book title = String
+  # num_copies: How many copies of a book, default is 1 = FixNum
+  # year: year published = FixNum
+  # edition: what edition is the book? = FixNum
   def initialize(title, author, desc, year, edition, num_copies)
-    # Runs whenever user adds a new book to Library.
-    # Assigns and storees attributes
-    #
-    # title: Book title = String
-    # author: Book title = String
-    # desc: Book title = String
-    # num_copies: How many copies of a book, default is 1 = FixNum
-    # year: year published = FixNum
-    # edition: what edition is the book? = FixNum
-
     @title = title
     @author = author
     @desc = desc
@@ -38,43 +35,39 @@ class Book
     @borrowed_by = []
   end
 
+  # If a user tries to add a book already in a collection,
+  # dup_copy will increase availability.
   def dup_copy
-    # If a user tries to add a book already in a collection,
-    # dup_copy will increase availability.
     @num_copies += 1
     @num_in += 1
 
     puts "Great now we have #{@num_copies}!"
   end
 
+  # Called when user checks out a book.
+  # Will keep track of how many copies are left on the shelf, and how many are out.
   def check_out
-    # Called when user checks out a book.
-    # Will keep track of how many copies are left on the shelf, and how many are out.
-
     @num_in -= 1
     @num_out += 1
 
     puts "Inventory ERROR!!!!" if @num_out > @num_copies
   end
 
+  # Stores who is borrowing this book.
   def check_out_by(user)
-    # Method keeps track of who is bororwing this book.
     borrowed_by.push(user)
   end
 
+  # Refreshes book count and how many copies are available.
   def return
-    # Refreshes book count and how many copies are available.
-
     @num_in += 1
     @num_out -= 1
 
     puts "Inventory ERROR!!!" if @num_in > @num_copies
-
   end
 
+  # Cycles through users array and deletes user from list.
   def return_by(user)
-    # Cycles through users array and delets user from list.
-
     borrowed_by.map {|user_in_arr|
       if user_in_arr == user
         borrowed_by.delete(user)
