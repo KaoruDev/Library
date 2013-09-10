@@ -76,7 +76,6 @@ class User
 
     @time_table[book.title.to_sym] = time
     puts "#{book.title} is now set to overdue"
-
   end
 
 end

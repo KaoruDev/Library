@@ -95,5 +95,12 @@ class Book
     }
   end
 
+  # Keeps track of future check outs.
+  # user: Passes in a user class representing the user who is scheduling loan
+  # future_date: Time, passes in the time the loan is schedule to.
+  def schedule_future_check_out(user, future_date)
+
+  end
+
 
 end

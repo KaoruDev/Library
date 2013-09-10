@@ -41,6 +41,32 @@ module Library
   # csv to add CSV functionality
   require 'csv'
 
+  # Verifies if user and book exist in database. Returns nil if they don't
+
+  def verify_user(username)
+    if @users != {}
+      @users.each_key{ |user_key|
+      if user_key == username.to_sym
+        current_user = @users[username.to_sym]
+      end
+      }
+    else
+      puts "You are no registered in our system!"
+    end
+  end
+
+  def verify_book(book_title)
+    if @collection != {}
+      @collection.each_key{ |book_key|
+      if book_key == book_title.to_sym
+        current_book = @collection[book_key]
+      end
+      }
+    else
+      puts "No such book exists in our collection!" 
+    end
+  end
+
 
   def self.add_book(title, author, desc, year, edition, num_copies = 1)
     # Creates a new book passing arguments to the Book class for storage.
@@ -153,7 +179,7 @@ module Library
       puts "Either there is no such book, or you are not registered. Please try again." 
     end
 
-    if current_book && current_user && current_book.num_in >=1 && !current_user.overdue && !current_user.max_borrowed
+    if current_book && current_user && current_book.num_in >=1 && !current_user.overdue && !current_user.max_borrowed && current_user.pin_num == pin
       due_date = Time.now + (60 * 60 * 24 * 7)
       puts "#{username}, you have checked out #{book_title}. It is due on #{due_date.strftime("%A, %B %d, %Y")}"
 
@@ -167,34 +193,19 @@ module Library
         puts "You may not borrow #{book_title} because you have an overdue book" if current_user.overdue
         puts "You may not borrow #{book_title} because your borrow limit has been reached." if current_user.max_borrowed
         puts "There is no available copy of #{book_title} for you to borrow" if current_book.num_in < 1
+        puts "Sorry you entered the wrong pin number." if current_user.pin_num == pin
       end
     end
-
-    # if @collection != {} && @users != {}
-    #   current_book = @collection[book_title.to_sym]
-    #   current_user = @users[user.to_sym]
-
-    #   if current_book && @users[user.to_sym] && @users[user.to_sym].pin_num == pin && @collection[book_title.to_sym].num_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
-    #     due_date = Time.now + (60 * 60 * 24 * 7)
-    
-    #     puts "You can borrow #{book_title}!"
-    #     @collection[book_title.to_sym].check_out
-    #     @collection[book_title.to_sym].check_out_by(user)
-    #     @users[user.to_sym].check_out(@collection[book_title.to_sym], due_date)
-    #   else
-    #     puts "You may not borrow this book!"
-    #   end
-    # end
   end
 
+  # returns book to library.
+  # user is converted to a symbol to access hash key in @users to determine who user is.
   def self.return(book_title, user, pin)
-    # returns book to library.
-    # user is converted to a symbol to access hash key in @users to determine who user is.
     
+    # Verifies if user has a this specific book checked out.
+    # Verifies user's pin number. If both are true,
+    # user's record is cleared, and book count is returned to collection.
     if @users[user.to_sym].borrowed_books[book_title.to_sym]  && @users[user.to_sym].pin_num == pin
-      # Verifies if user has a this specific book checked out.
-      # Verifies user's pin number. If both are true,
-      # user's record is cleared, and book count is returned to collection.
 
       @collection[book_title.to_sym].return
       @collection[book_title.to_sym].return_by(user)
@@ -217,10 +228,13 @@ module Library
     }
   end
 
+
   #Test over due by setting a book that is over due on purpose.
   def self.test_over_due(book_title, user)
     @users[user.to_sym].set_over_due(@collection[book_title.to_sym])
   end
+
+
 
   # Creates a CSV file "Collection.csv" with a list of books in the library.
   def self.create_book_list
@@ -266,13 +280,20 @@ module Library
   # book_title: String - Used to pull book object in @collection array
   # username: String - Used to store who is scheduling a future check out.
   def self.future_check_out(book_title, username)
+    if @collection != {} && @users != {}
+
+
+    end
+
+
+
     current_book = @collection[book_title.to_sym]
     if current_book.num_in == 0 && current_book.future_check_out.empty?
       current_book.borrowed_by.each {|x|
         puts x.class
       }
 
-      current_book.schedule_future_check_out(@users[username.to_sym], date)
+      current_book.schedule_future_check_out(@users[username.to_sym], due_date)
       puts "Got it, we will notify you when #{book_title} is ready for you!"
     end
   end
