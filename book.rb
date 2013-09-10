@@ -5,7 +5,7 @@ class Book
   attr_reader :title, :author, :desc, :year, :edition
 
 
-  attr_accessor :num_copies, :rating, :reviews, :num_in, :num_out, :borrowed_by
+  attr_accessor :num_copies, :ratings, :reviews, :num_in, :num_out, :borrowed_by
 
   # check_in keeps track of how many books are available
   # check_out keeps track of how many copies are out.
@@ -33,6 +33,8 @@ class Book
     @num_in = @num_copies
     @num_out = 0
     @borrowed_by = []
+    @reviews = []
+    @ratings = []
   end
 
   # If a user tries to add a book already in a collection,
@@ -72,6 +74,23 @@ class Book
       if user_in_arr == user
         borrowed_by.delete(user)
       end
+    }
+  end
+
+  # Stores ratings and review for this book.
+  def write_review(rating, review)
+    @ratings.push(rating)
+    @reviews.push(review)
+  end
+
+  # Prints review and rating of the book
+  def read_review
+    index = 0
+    puts "Here are the reviews and ratings for: #{@title}"
+    @ratings.each {|rating_num|
+      puts "Rating: #{rating_num}"
+      puts "Review: #{@reviews[index]}"
+      index += 1
     }
   end
 

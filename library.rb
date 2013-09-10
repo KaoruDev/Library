@@ -213,8 +213,14 @@ module Library
   end
 
   # Writes a review for a book. Passes a string and a 1-5 rating for the book.
+  def self.write_review(book_title, rating, review)
+    @collection[book_title.to_sym].write_review(rating, review)
+  end
 
   # Prints book reviews and rating value.
+  def self.read_review(book_title)
+    @collection[book_title.to_sym].read_review
+  end
 
   # Enables users to schedule future check_outs
 
@@ -242,7 +248,10 @@ Library.my_books("Goat")
 Library.test_over_due("LOTR", "Bob")
 Library.check_over_due
 
+Library.write_review("LOTR", 5, "1st Review for LOTR")
+Library.write_review("LOTR", 2, "2nd Review for LOTR")
 
+Library.read_review("LOTR")
 
 
 
