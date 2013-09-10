@@ -5,7 +5,7 @@ class Book
   attr_reader :title, :author, :desc, :year, :edition
 
 
-  attr_accessor :num_copies, :ratings, :reviews, :num_in, :num_out, :borrowed_by
+  attr_accessor :num_copies, :ratings, :reviews, :num_in, :num_out, :borrowed_by, :future_check_out
 
   # check_in keeps track of how many books are available
   # check_out keeps track of how many copies are out.
@@ -35,6 +35,7 @@ class Book
     @borrowed_by = []
     @reviews = []
     @ratings = []
+    @future_check_out = {}
   end
 
   # If a user tries to add a book already in a collection,

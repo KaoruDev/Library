@@ -130,21 +130,61 @@ module Library
   # Requires book_title = string
   # verifies user (string) and pin (interger)
 
-  def self.check_out(book_title, user, pin)
+  def self.check_out(book_title, username, pin)
 
-    # Verifies if the book is in @collection, if user has an account and correct pin number, the book is available,
-    # the user has no overdue books or has 2 books borrowed. If true, sends information to both book and user class
+    # Verifies if the book is in @collection, if user has an account and has entered the correct pin, the book is available,
+    # the user has no overdue books or has reach the borrowing limit. If true, sends information to both book and user class
     # to update changes. 
-    if @collection[book_title.to_sym] && @users[user.to_sym] && @users[user.to_sym].pin_num == pin && @collection[book_title.to_sym].num_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
-      due_date = Time.now + (60 * 60 * 24 * 7)
-  
-      puts "You can borrow #{book_title}!"
-      @collection[book_title.to_sym].check_out
-      @collection[book_title.to_sym].check_out_by(user)
-      @users[user.to_sym].check_out(@collection[book_title.to_sym], due_date)
+    search_results = false
+    current_book, current_user = nil
+
+    if @collection != {} && @users != {}
+      @collection.each_key{ |book_key|
+        if book_key == book_title.to_sym
+          current_book = @collection[book_key]
+        end
+      }
+      @users.each_key{ |user_key|
+        if user_key == username.to_sym
+          current_user = @users[username.to_sym]
+        end
+      }
     else
-      puts "You may not borrow this book!"
+      puts "Either there is no such book, or you are not registered. Please try again." 
     end
+
+    if current_book && current_user && current_book.num_in >=1 && !current_user.overdue && !current_user.max_borrowed
+      due_date = Time.now + (60 * 60 * 24 * 7)
+      puts "#{username}, you have checked out #{book_title}. It is due on #{due_date.strftime("%A, %B %d, %Y")}"
+
+      current_book.check_out
+      current_book.check_out_by(current_user)
+      current_user.check_out(current_book, due_date)
+    else
+      puts "You have to register before you may borrow books." unless current_user
+      puts "There is no such book." unless current_book
+      if current_book && current_user
+        puts "You may not borrow #{book_title} because you have an overdue book" if current_user.overdue
+        puts "You may not borrow #{book_title} because your borrow limit has been reached." if current_user.max_borrowed
+        puts "There is no available copy of #{book_title} for you to borrow" if current_book.num_in < 1
+      end
+    end
+
+    # if @collection != {} && @users != {}
+    #   current_book = @collection[book_title.to_sym]
+    #   current_user = @users[user.to_sym]
+
+    #   if current_book && @users[user.to_sym] && @users[user.to_sym].pin_num == pin && @collection[book_title.to_sym].num_in >=1 && !@users[user.to_sym].overdue && !@users[user.to_sym].max_borrowed
+    #     due_date = Time.now + (60 * 60 * 24 * 7)
+    
+    #     puts "You can borrow #{book_title}!"
+    #     @collection[book_title.to_sym].check_out
+    #     @collection[book_title.to_sym].check_out_by(user)
+    #     @users[user.to_sym].check_out(@collection[book_title.to_sym], due_date)
+    #   else
+    #     puts "You may not borrow this book!"
+    #   end
+    # end
   end
 
   def self.return(book_title, user, pin)
@@ -223,6 +263,19 @@ module Library
   end
 
   # Enables users to schedule future check_outs
+  # book_title: String - Used to pull book object in @collection array
+  # username: String - Used to store who is scheduling a future check out.
+  def self.future_check_out(book_title, username)
+    current_book = @collection[book_title.to_sym]
+    if current_book.num_in == 0 && current_book.future_check_out.empty?
+      current_book.borrowed_by.each {|x|
+        puts x.class
+      }
+
+      current_book.schedule_future_check_out(@users[username.to_sym], date)
+      puts "Got it, we will notify you when #{book_title} is ready for you!"
+    end
+  end
 
   # Enables users to extends borrow time.
 
@@ -238,6 +291,8 @@ Library.add_user("Goat", 0000, "answer")
 
 Library.check_out("Fish", "Bob", 4821)
 Library.return("Fish", "Bob", 4821)
+
+Library.check_out("Fish", "Goat", 0000)
 
 Library.list
 Library.info_on("Fish")
