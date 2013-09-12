@@ -18,7 +18,7 @@ class User
   # Records first and last name and pin number user sets.  
   attr_accessor :overdue, :max_borrowed, :borrowed_books, :time_table
 
-  def initialize(username, pin_num, answer)
+  def initialize(username, pin_num)
     @username = username
     @pin_num = pin_num
 

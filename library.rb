@@ -1,11 +1,32 @@
 # Library module will be able to keep track of books and users.
 #
-# Library.methods verify_user & verify_book verifies if user and book is in the database.
+# verify_user & verify_book verifies if user and book is in the database.
 #
-# add_book creates a new book class. Library keeps track of it in the collection hash via title.
+# add_book creates a new book class. Library keeps track of instance via collection hash via title.
 #
+# add_user creates a new user class. Library keeps track of instance via users hash via name.
 #
-
+# list prints a detailed list of books in the collection hash.
+#
+# info_on prints all information about a specific book.
+#
+# my_books prints a lists of borrowed books of a specific user.
+#
+# check_out allows registered users to borrow a specific book.
+# 
+# return allows registered users to return a specific book.
+#
+# check_over_due sets any books overdue.
+#
+# test_over_due sets a specific book overdue to test other methods.
+#
+# create_book_lists creates a csv file with a list of books currently in the collection.
+#
+# import_book_list imports a csv and adds the books in the collection hash.
+#
+# write_review and read_review allows anyone to write/read reviews and ratings of a book.
+#
+# future_check_out allows users to schedule a future check out if book is currently not available.
 
 module Library
 
@@ -31,23 +52,33 @@ module Library
   require 'csv'
 
   # Verifies if user and book exist in database. Returns nil if they don't
+  #
+  # Library.verify_user("Marley")
+  #   if "Marley" exists systems puts "You are registered"
+  #   else puts You are not registed in our system! 
   def self.verify_user(username)
     if @users != {}
       @users.each_key{ |user_key|
       if user_key == username.to_sym
-        current_user = @users[username.to_sym]
+        puts "#{username}, you are registered in system."
       end
       }
     else
-      puts "You are no registered in our system!"
+      puts "You are not registered in our system!"
     end
   end
+
+  # Verifies if user and book exist in database. Returns nil if they don't
+  #
+  # Library.verify_book("LOTR")
+  #   if "LOTR" exists systems puts "You are registered"
+  #   else puts You are not registered in our system! 
 
   def self.verify_book(book_title)
     if @collection != {}
       @collection.each_key{ |book_key|
       if book_key == book_title.to_sym
-        current_book = @collection[book_key]
+        puts "#{book_title} is in our collection."
       end
       }
     else
@@ -58,14 +89,8 @@ module Library
   # Creates a new book passing arguments to the Book class for storage.
   # Book class then Assigns and stores attributes
   #
-  # title: Book title = String
-  # author: Book title = String
-  # desc: Book title = String
-  # num_copies: How many copies of a book = FixNum
-  # year: year published = FixNum
-  # edition: what edition is the book? = FixNum
-  #
-  # Then it is added to the Library's collection.
+  # Library.add_book("LOTR", "JJR Tokens", "desc of book", "2004", "edition", "4")
+  # => creates a book class with the arguments and stores it in @collection hash using the title as the key.
   def self.add_book(title, author, desc, year, edition, num_copies = 1)
 
     # If a user tries to add a book already in a collection, 
@@ -80,23 +105,29 @@ module Library
 
   # Creates a new user to hold information:
   #
-  # - username: used to id user.
-  # - pin_num: used to verify user
-  # - answer: answer to security question incase user loses pin
-  # NOTE: Secruity Question has not been created, since there is no output in program yet.
-  def self.add_user(username, pin_num, answer)
+  # Library.add_user("Styles", 4325)
+  # => creates a user class with user.name = "Styles" and user.pin_num = 4325
+  # Adds new user class to @users hash using name as the key.
+  #
+  def self.add_user(username, pin_num)
     
     if @users != {} && @users[username.to_sym]
       puts "Sorry, #{username} is taken."
     else
-      user = User.new(username, pin_num, answer)
+      user = User.new(username, pin_num)
 
       @users[username.to_sym] = user
     end
   end
 
-  # Prints a list of books, how many copies there are, how many copies are checked out,
-  # who they are checked out by, and how many are available.  
+  # Prints a lists of books currently in the collection.
+  #
+  # Library.list
+  # => Title: LOTR
+  # => Author: JJR Tokens
+  # => Checked In: 4
+  # => Checked Out: 0
+  #
   def self.list
 
     @collection.each { |name, book|
@@ -111,6 +142,11 @@ module Library
 
   # Prints out more information on a specific book.
   # Title, Author, Description, Year published, Edition, How many avaiable.
+  # Library.info_on("LOTR")
+  # => Title: LOTR
+  # => Author: JJR Tokens
+  # etc..
+  #
   def self.info_on(book_title)
     look_up = @collection[book_title.to_sym]
     print %<
@@ -123,10 +159,16 @@ module Library
      >
   end
 
-  # prints out of a list of books that you have checked out.
+  # Prints out of a list of books that you have checked out.
+  # 
+  # Library.user("Marley")
+  # => Here is a list of books you currently have checked out
+  # => "LOTR"
+  # => etc..
+  #
   def self.my_books(user)
     puts %<
-    Here is a list of books you currently have checked_out>
+    Here is a list of books you currently have checked out>
 
     if @users[user.to_sym] && @users[user.to_sym].borrowed_books.length > 0
       @users[user.to_sym].borrowed_books.each {|key, value|
@@ -138,9 +180,11 @@ module Library
     end
   end
 
-  # check_out stamps a book for check out.
+  # Check out stamps a book for check out.
   # Requires book_title = string
   # verifies user (string) and pin (interger)
+  # Library.check_out("LOTR", "Marley", 4325)
+  #
 
   def self.check_out(book_title, username, pin)
     # Verifies if the book is in @collection, if user has an account and has entered the correct pin, the book is available,
@@ -183,6 +227,7 @@ module Library
 
   # returns book to library.
   # user is converted to a symbol to access hash key in @users to determine who user is.
+  # Library.return("LOTR", "Marley")
   def self.return(book_title, user, pin)
     # Verifies if user has a this specific book checked out.
     # Verifies user's pin number. If both are true,
@@ -201,6 +246,7 @@ module Library
   end
 
   # Checks through @users to find any user who has a book that is overdue.
+  # Library.check_over_due
 
   def self.check_over_due
     @users.each_value {|user|
@@ -211,7 +257,9 @@ module Library
   end
 
 
-  #Test over due by setting a book that is over due on purpose.
+  # Test over due by setting a book that is over due on purpose.
+  # Library.test_over_due("LOTR", "Marley")
+  # => sets LOTR in user to be overdue by a week.
   def self.test_over_due(book_title, user)
     @users[user.to_sym].set_over_due(@collection[book_title.to_sym])
   end
@@ -219,6 +267,8 @@ module Library
 
 
   # Creates a CSV file "Collection.csv" with a list of books in the library.
+  # Library.create_book_list
+  #
   def self.create_book_list
     header = ["Title", "Author"]
 
@@ -249,11 +299,13 @@ module Library
   end
 
   # Writes a review for a book. Passes a string and a 1-5 rating for the book.
+  # Library.write_review("LOTR", 4, "Awesome")
   def self.write_review(book_title, rating, review)
     @collection[book_title.to_sym].write_review(rating, review)
   end
 
   # Prints book reviews and rating value.
+  # Library.read_review("LOTR")
   def self.read_review(book_title)
     @collection[book_title.to_sym].read_review
   end
@@ -261,6 +313,7 @@ module Library
   # Enables users to schedule future check_outs
   # book_title: String - Used to pull book object in @collection array
   # username: String - Used to store who is scheduling a future check out.
+  # Library.future_check_out("LOTR", "Marley")
   def self.future_check_out(book_title, username)
     current_user, current_book = nil
 
